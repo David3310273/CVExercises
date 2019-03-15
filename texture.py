@@ -10,21 +10,15 @@ def LBP(path=""):
 
     grayimg = cv.cvtColor(inimage,cv.COLOR_BGR2GRAY)
 
-    cv.imwrite("texture.jpg", grayimg)
-
     row, col = grayimg.shape
+    textureimg = np.zeros((row,col,1), dtype=np.uint8)
 
-    for i in range(row):
-        for j in range(col):
+    for i in range(1, row-1):
+        for j in range(1, col-1):
             temp = np.zeros((8,1,1), dtype=np.int32)
             for index, pos in enumerate(get_3x3_Directions(i, j)):
                 x, y = pos
-                if 0<=x<row and 0<=y<col:
-                    temp[index] = 1 if grayimg[x][y] > grayimg[i][j] else 0
-            grayimg[i][j] = np.packbits(temp)[0]
+                temp[index] = 1 if grayimg[x][y] > grayimg[i][j] else 0
+            textureimg[i][j] = np.packbits(temp)[0]    #将数组中的0-1序列转化成对应的二进制数
 
-    cv.imwrite("texture.jpg", grayimg)
-
-
-if __name__ == '__main__':
-    LBP("./girl.jpg")
+    cv.imwrite("texture.jpg", textureimg)
